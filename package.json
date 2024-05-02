@@ -1,0 +1,23 @@
+{
+  "name": "nv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alunenko/nv.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alunenko/nv/issues"
+  },
+  "homepage": "https://github.com/alunenko/nv#readme",
+  "dependencies": {
+    "qrcode-generator": "^1.4.4"
+  }
+}

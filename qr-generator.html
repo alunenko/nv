@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QR generator</title>
+</head>
+<body>
+<div id="placeHolder"></div>
+<script type="text/javascript" src="./node_modules/qrcode-generator/qrcode.js"></script>
+<script>
+    var typeNumber = 5;
+    var errorCorrectionLevel = 'H';
+    var qr = qrcode(typeNumber, errorCorrectionLevel);
+    qr.addData("https://nataliiaveselovska.com/dqr.html");
+    qr.make();
+    document.getElementById('placeHolder').innerHTML = qr.createSvgTag({
+        cellSize: 10,
+        margin: 4,
+        scalable: true
+    });
+</script>
+</body>
+</html>
