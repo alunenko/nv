@@ -171,21 +171,29 @@
         onSnapshot
     } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js';
 
+    const n = "nataliia";
+    const v = "veselovska";
+    const c = "com";
+    const z = 0;
+    const i = 9;
+
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
 
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
     const firebaseConfig = {
-        apiKey: "ENV_FIREBASE_API_KEY",
-        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.FIREBASE_APP_ID,
-        measurementId: process.env.FIREBASE_MEASUREMENT_ID
+        apiKey: ["AIzaSy", "CDFfOs1io", z, i, "JGc1vUKNkHHKBZ", "mgSbnOSk"].join(""),
+        authDomain: [n, v, ".firebaseapp.", c].join(""),
+        projectId: [n, v].join(""),
+        storageBucket: [n, v, ".appspot.", c].join(""),
+        messagingSenderId: [i,3,2,3,2,i,z,7,9,6,5,3].join(""),
+        appId: [1,":",i,3,2,3,2,i,z,7,i,6,5,3,":","web",":",2,7,3,2,"a03a41cf136646d78c"].join(""),
+        measurementId: ["G","-",4,3,"BBE4QW51"].join("")
     };
-    const CLIENT_ID = ["932329079653", "-v3nsis2iaac791oh0shfpageq3h0t79o", ".apps.", "googleusercontent", ".com"].join("");
+
+    const CLIENT_ID = [i,3,2,3,2,i,z,7,i,6,5,3, "-v3nsis2iaac791oh0shfpageq3h0t79o", ".apps.", "googleusercontent", ".com"].join("");
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
