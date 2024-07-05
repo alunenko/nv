@@ -1,0 +1,25 @@
+{
+  "name": "nv",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "firebase-tools": "^13.13.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fbSignGoogle": "./node_modules/.bin/firebase login",
+    "fbInit": "./node_modules/.bin/firebase init",
+    "fbDeploy": "./node_modules/.bin/firebase deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alunenko/nv.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alunenko/nv/issues"
+  },
+  "homepage": "https://github.com/alunenko/nv#readme"
+}
