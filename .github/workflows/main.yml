@@ -28,5 +28,5 @@ jobs:
 
       - name: Replace CLIENT_ID placeholder
         run: |
-          sed -i 's/ENV_CLIENT_ID/${{ secrets.CLIENT_ID }}/g' auth.html
+          sed -i 's/ENV_CLIENT_ID/'123'/g' auth.html
           sed -i 's/ENV_FIREBASE_API_KEY/${{ secrets.FIREBASE_API_KEY }}/g' auth.html
