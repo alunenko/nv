@@ -213,7 +213,7 @@
     function handleDriveAccess() {
         // Initialize the new token client
         const client = google.accounts.oauth2.initTokenClient({
-            client_id: process.env.CLIENT_ID,
+            client_id: ${{CLIENT_ID}},
             scope: 'https://www.googleapis.com/auth/drive.readonly',
             callback: async (response) => {
                 const accessToken = response.access_token;
@@ -307,7 +307,7 @@
 
     window.onload = function () {
         google.accounts.id.initialize({
-            client_id: process.env.CLIENT_ID,
+            client_id: ${{CLIENT_ID}},
             callback: signinHandler,
             auto_select: false, // Set to false to disable auto-select after login
         });
