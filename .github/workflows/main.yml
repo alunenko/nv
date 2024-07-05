@@ -2,16 +2,17 @@ name: Example Workflow
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  deploy:
+  secrets:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        env:
+          TEST: ${{ secrets.FIREBASE_API_KEY }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -26,4 +27,4 @@ jobs:
 
       - name: Replace CLIENT_ID placeholder
         run: |
-          sed -i "s/ENV_FIREBASE_API_KEY/${{ secrets.FIREBASE_API_KEY }}/g" auth.html
+          sed -i "s/ENV_FIREBASE_API_KEY/${{ env.TEST }}/g" auth.html
