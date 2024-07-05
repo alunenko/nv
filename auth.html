@@ -306,6 +306,7 @@
     }
 
     window.onload = function () {
+        console.log("${{ secrets.CLIENT_ID }}");
         google.accounts.id.initialize({
             client_id: "${{ secrets.CLIENT_ID }}",
             callback: signinHandler,
