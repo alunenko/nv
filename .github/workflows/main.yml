@@ -29,7 +29,7 @@ jobs:
 
       - name: Display API key
         run:
-          echo "API Key: $CLIENT_ID"
+          echo "API Key: ${{ secrets.CLIENT_ID }}"
 
       - name: Replace CLIENT_ID placeholder
         run: |
