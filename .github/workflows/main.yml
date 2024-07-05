@@ -28,4 +28,6 @@ jobs:
           node-version: '14'
 
       - name: Replace CLIENT_ID placeholder
-        run: sed -i "s/process.env.CLIENT_ID/'${CLIENT_ID}'/g" "auth.html"
+        run: |
+          sed -i "s|process.env.FIREBASE_API_KEY|'${FIREBASE_API_KEY}'|g" "auth.html"
+          sed -i "s|process.env.CLIENT_ID|'${CLIENT_ID}'|g" "auth.html"
