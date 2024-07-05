@@ -185,7 +185,7 @@
         appId: "${{ secrets.FIREBASE_APP_ID }}",
         measurementId: "${{ secrets.FIREBASE_MEASUREMENT_ID }}"
     };
-    const CLIENT_ID = "${{ secrets.CLIENT_ID }}";
+    const CLIENT_ID = process.env.CLIENT_ID;
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);

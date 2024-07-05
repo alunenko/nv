@@ -26,3 +26,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14'
+
+      - name: Replace CLIENT_ID placeholder
+        run: sed -i "s/process.env.CLIENT_ID/'${CLIENT_ID}'/g" "auth.html"
