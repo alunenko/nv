@@ -177,13 +177,13 @@
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
-        apiKey: "AIzaSyCDFfOs1ioO9JGc1vUKNkHHKBZmgSbnOSk",
-        authDomain: "nataliia-veselovska.firebaseapp.com",
-        projectId: "nataliia-veselovska",
-        storageBucket: "nataliia-veselovska.appspot.com",
-        messagingSenderId: "932329079653",
-        appId: "1:932329079653:web:2732a03a41cf136646d78c",
-        measurementId: "G-43BBE4QW51"
+        apiKey: ${{FIREBASE_API_KEY}},
+        authDomain: ${{FIREBASE_AUTH_DOMAIN}},
+        projectId: ${{FIREBASE_PROJECT_ID}},
+        storageBucket: ${{FIREBASE_STORAGE_BUCKET}},
+        messagingSenderId: ${{FIREBASE_MESSAGING_SENDER_ID}},
+        appId: ${{FIREBASE_APP_ID}},
+        measurementId: ${{FIREBASE_MEASUREMENT_ID}}
     };
 
     // Initialize Firebase
@@ -194,10 +194,7 @@
     const db = getFirestore();
     let globalFireBaseUser = null;
     let globalResponse = null;
-    let globalDriveUser = null;
-    const REDIRECT_URI = 'http://localhost:63342/nv/auth.html';
     const fileId = "1IP7byvfo2ech6iia5qlu-GOwvpoj37Im";
-    const API_KEY = "AIzaSyCDFfOs1ioO9JGc1vUKNkHHKBZmgSbnOSk";
 
     function signinHandler(response) {
         globalResponse = response;
@@ -216,7 +213,7 @@
     function handleDriveAccess() {
         // Initialize the new token client
         const client = google.accounts.oauth2.initTokenClient({
-            client_id: CLIENT_ID,
+            client_id: ${{CLIENT_ID}},
             scope: 'https://www.googleapis.com/auth/drive.readonly',
             callback: async (response) => {
                 const accessToken = response.access_token;
@@ -310,7 +307,7 @@
 
     window.onload = function () {
         google.accounts.id.initialize({
-            client_id: CLIENT_ID,
+            client_id: ${{CLIENT_ID}},
             callback: signinHandler,
             auto_select: false, // Set to false to disable auto-select after login
         });
