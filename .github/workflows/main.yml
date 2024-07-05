@@ -29,7 +29,6 @@ jobs:
 
       - name: Replace CLIENT_ID placeholder
         run: |
-          sed -i '' -e "s|process\.env\.FIREBASE_API_KEY|FIREBASE_API_KEY|g" auth.html
           sed -i '' -e "s|process\.env\.FIREBASE_AUTH_DOMAIN|${FIREBASE_AUTH_DOMAIN}|g" auth.html
           sed -i '' -e "s|process\.env\.FIREBASE_PROJECT_ID|'${FIREBASE_PROJECT_ID}'|g" auth.html
           sed -i '' -e "s|process\.env\.FIREBASE_STORAGE_BUCKET|'${FIREBASE_STORAGE_BUCKET}'|g" auth.html
