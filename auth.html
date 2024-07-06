@@ -185,15 +185,15 @@
 
     const firebaseConfig = {
         apiKey: ["AIzaSy", "CDFfOs1ioO", i, "JGc1vUKNkHHKBZ", "mgSbnOSk"].join(""),
-        authDomain: [n, v, ".firebaseapp.", c].join(""),
+        authDomain: [n, "-", v, ".firebaseapp.", c].join(""),
         projectId: [n, v].join(""),
         storageBucket: [n, v, ".appspot.", c].join(""),
-        messagingSenderId: [i,3,2,3,2,i,z,7,9,6,5,3].join(""),
+        messagingSenderId: [i,3,2,3,2,i,z,7,i,6,5,3].join(""),
         appId: [1,":",i,3,2,3,2,i,z,7,i,6,5,3,":","web",":",2,7,3,2,"a03a41cf136646d78c"].join(""),
         measurementId: ["G","-",4,3,"BBE4QW51"].join("")
     };
 
-    const CLIENT_ID = [i,3,2,3,2,i,z,7,i,6,5,3, "-v3nsis2iaac791oh0shfpageq3h0t79o", ".apps.", "googleusercontent", ".com"].join("");
+    const CLIENT_ID = [i,3,2,3,2,i,z,7,i,6,5,3, "-v3nsis2iaac791oh0shfpageq3h0t79o", ".apps.", "googleusercontent.", c].join("");
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -206,6 +206,7 @@
     const fileId = "1IP7byvfo2ech6iia5qlu-GOwvpoj37Im";
 
     function signinHandler(response) {
+        console.log('signinHandler');
         globalResponse = response;
         signInWithPopup(auth, provider).then(async (result) => {
             // User signed in
