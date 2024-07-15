@@ -151,10 +151,10 @@
         <!--        </button>-->
     </fieldset>
     <button type="button" id="driveButton" style="display:none;">Access Google Drive</button>
-    <!--    https://drive.google.com/file/d/1IP7byvfo2ech6iia5qlu-GOwvpoj37Im/view?usp=sharing-->
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/SBd52eQzH94" title="" frameBorder="0"   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"  allowFullScreen></iframe>
 </form>
 <script async defer src="https://accounts.google.com/gsi/client"></script>
-<script src="https://apis.google.com/js/api.js"></script>
 <script type="module">
     // Import the functions you need from the SDKs you need
     import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
@@ -193,6 +193,8 @@
         measurementId: ["G","-",4,3,"BBE4QW51"].join("")
     };
 
+
+
     const CLIENT_ID = [i,3,2,3,2,i,z,7,i,6,5,3, "-v3nsis2iaac791oh0shfpageq3h0t79o", ".apps.", "googleusercontent.", c].join("");
 
     // Initialize Firebase
@@ -201,65 +203,23 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
     const db = getFirestore();
-    let globalFireBaseUser = null;
-    let globalResponse = null;
-    const fileId = "1IP7byvfo2ech6iia5qlu-GOwvpoj37Im";
+    let globalUser = {
+        app: {},
+        g: {}
+    };
+    let driveT = null;
 
-    function signinHandler(response) {
-        console.log('signinHandler');
-        globalResponse = response;
+    function signinHandler() {
         signInWithPopup(auth, provider).then(async (result) => {
             // User signed in
-            console.log(result.user);
+            driveT = result.credential.accessToken;
             displayAuthUser(result.user);
-            handleDriveAccess();
+            // handleDriveAccess();
         })
             .catch((error) => {
                 // Handle Errors here.
                 console.error(error);
             });
-    }
-
-    function handleDriveAccess() {
-        // Initialize the new token client
-        const client = google.accounts.oauth2.initTokenClient({
-            client_id: CLIENT_ID,
-            scope: 'https://www.googleapis.com/auth/drive.readonly',
-            callback: async (response) => {
-                const accessToken = response.access_token;
-                console.log('Access Token:', accessToken);
-
-                // Fetch file metadata
-                try {
-                    const fileResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`
-                        }
-                    });
-                    const fileData = await fileResponse.json();
-                    console.log('File data:', fileData);
-
-                    fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`
-                        }
-                    })
-                        .then(response => response.blob())
-                        .then(blob => {
-                            const imageUrl = URL.createObjectURL(blob);
-                            const img = document.createElement('img');
-                            img.src = imageUrl;
-                            document.body.appendChild(img);
-                        })
-                        .catch(error => console.error('Error fetching file:', error));
-                } catch (error) {
-                    console.error('Error fetching file:', error);
-                }
-            }
-        });
-
-        // Request access token
-        client.requestAccessToken();
     }
 
     function displayAuthUser(user) {
@@ -281,6 +241,7 @@
         signOut(auth).then(() => {
             // Sign-out successful.
             cleanGreeting();
+            clearCourses();
             console.log('Sign-out successful.');
             showSigninGoogle();
         }).catch((error) => {
@@ -289,14 +250,29 @@
         });
     }
 
-    onAuthStateChanged(auth, (user) => {
+    function clearCourses() {
+        document.querySelector("#courses")?.remove();
+    }
+
+    onAuthStateChanged(auth, async (user) => {
         if (user) {
             console.log(user);
+            driveT = await initDrive();
             hideSigninGoogle();
-            globalFireBaseUser = user;
+            globalUser.g = user;
             displayAuthUser(user);
-            const role = collection(db, `users/${user.uid}/role`);
-            getUserRole(role);
+            getUserRole();
+            await getCourses();
+            if (globalUser.app["courses"]?.length) {
+                console.log("if (globalUser.app[courses]?.length) {");
+                await fetchImages();
+                displayCourse();
+            } else {
+                console.log("dev mode");
+            }
+            console.log("after if");
+        } else {
+            init();
         }
     });
 
@@ -308,14 +284,139 @@
         document.querySelector("#sign-in-button").style.display = "block";
     }
 
-    function getUserRole(ref) {
-        return onSnapshot(ref, (snapshot) => {
-            const role = snapshot.docs.map((record) => record.get("role"));
-            document.querySelector("#user-role i").textContent = role.length ? role : 'guest';
+    function getUserRole() {
+        const ref = collection(db, `/users`);
+        onSnapshot(ref, (snapshot) => {
+            const usersMap = snapshot.docs.reduce((map, record) => {
+                map.set(record.id, { id: record.id, ...record.data() });
+                return map;
+            }, new Map());
+
+            const user = usersMap.get(globalUser.g.uid);
+            globalUser.app = user ?
+                { ...globalUser.app, ...user } :
+                { ...globalUser.app, role: 'guest' };
+
+            document.querySelector("#user-role i").textContent = globalUser.app["role"];
         });
     }
 
-    window.onload = function () {
+    function getCourses() {
+        const ref = collection(db, `/course`);
+
+        return new Promise((resolve, reject) => {
+            const unsubscribe = onSnapshot(ref, async (snapshot) => {
+                try {
+                    const coursesMap = snapshot.docs.reduce((map, record) => {
+                        map.set(record.id, { id: record.id, ...record.data() });
+                        return map;
+                    }, new Map());
+
+                    if(globalUser.app.role === "student") {
+                        const coursesData = []
+                        globalUser.app["courses"]?.forEach((course) => {
+                            const appliedCourse = coursesMap.get(course);
+                            appliedCourse && coursesData.push(appliedCourse);
+                        });
+                        globalUser.app["courses"] = coursesData;
+                    } else if(globalUser.app.role === "admin") {
+                        globalUser.app["courses"] = [...coursesMap.values()];
+                    } else {
+                        globalUser.app["courses"] = [];
+                    }
+
+                    // Resolve the promise after processing the initial snapshot
+                    resolve();
+                    // Optionally, you can unsubscribe after the initial load if you don't need real-time updates
+                    unsubscribe();
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        });
+    }
+
+    async function fetchImages() {
+        try {
+            const courses = globalUser.app["courses"];
+            for (const course of courses) {
+                console.log(course?.images);
+                if(course?.images) {
+                    for (const image of course.images) {
+                        await handleDriveAccess(image.id)
+                            .then((imageURL) => { image.url = imageURL; })
+                            .catch((error) => { image.message = "check access"; image.status = error.ok; }
+                        );
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error in fetchImages:', error);
+        }
+    }
+
+    async function handleDriveAccess(fileId) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                // Fetch file content
+                const mediaResponse = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+                    headers: {
+                        Authorization: `Bearer ${driveT}`
+                    }
+                });
+
+                console.log(mediaResponse);
+
+                if(mediaResponse.ok) {
+                    const blob = await mediaResponse.blob();
+                    const imageUrl = URL.createObjectURL(blob);
+                    console.log('Blob fetched for fileId:', fileId);
+                    resolve(imageUrl);
+                } else {
+                    reject(mediaResponse);
+                }
+            } catch (error) {
+                console.error('Error fetching file:', error);
+                reject(error);
+            }
+        });
+    }
+
+    function displayCourse() {
+        const coursesBlock = document.createElement("div");
+        coursesBlock.id = "courses";
+        console.log("displayCourse");
+        console.log(globalUser);
+
+        globalUser.app["courses"].forEach((course) => {
+            const courseBlock = document.createElement("div");
+
+            const title = document.createElement("h1");
+            title.textContent = course.title;
+            courseBlock.appendChild(title);
+
+            if(course?.images.length) {
+                course.images.forEach((image) => {
+                    if(image.status) {
+                        const imageEl = document.createElement("img");
+                        imageEl.src = image.url;
+
+                        courseBlock.appendChild(imageEl);
+                    } else {
+                        const message = document.createElement("p");
+                        message.textContent = image.message;
+                        courseBlock.appendChild(message);
+                    }
+                });
+            }
+
+            coursesBlock.appendChild(courseBlock);
+        });
+
+        document.body.appendChild(coursesBlock);
+    }
+
+    function init() {
         google.accounts.id.initialize({
             client_id: CLIENT_ID,
             callback: signinHandler,
@@ -326,7 +427,21 @@
             {theme: 'outline', size: 'large'}  // customization attributes
         );
         google.accounts.id.prompt(); // also display the One Tap dialog
-    };
+    }
+
+    async function initDrive() {
+        return new Promise((resolve, reject) => {
+            const client = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: 'https://www.googleapis.com/auth/drive.readonly',
+                callback: (response) => {
+                    resolve(response.access_token);
+                }
+            });
+            client.requestAccessToken();
+        });
+    }
 </script>
+<script src="https://apis.google.com/js/api.js"></script>
 </body>
 </html>
